@@ -1,8 +1,11 @@
-import './App.css';
+import "./App.css";
+import Chessboard from "./components/Chessboard";
 
 function App() {
   return (
-   <div>CHess Board</div>
+    <div id="app">
+      <Chessboard />
+    </div>
   );
 }
 
