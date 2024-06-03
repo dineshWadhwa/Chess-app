@@ -1,17 +1,5 @@
 import "./Chessboard.css";
 import Tile from "./Tile/Tile";
-import BlackPawnImg from "../assets/Images/pawn_b.png";
-import WhitePawnImg from "../assets/Images/pawn_w.png";
-import BlackrookImg from "../assets/Images/rook_b.png";
-import WhiterookImg from "../assets/Images/rook_w.png";
-import BlackbishopImg from "../assets/Images/bishop_b.png";
-import WhitebishopImg from "../assets/Images/bishop_w.png";
-import BlackknightImg from "../assets/Images/knight_b.png";
-import WhiteknightImg from "../assets/Images/knight_w.png";
-import WhitekingImg from "../assets/Images/king_w.png";
-import BlackkingImg from "../assets/Images/king_b.png";
-import WhitequeenImg from "../assets/Images/queen_w.png";
-import BlackqueenImg from "../assets/Images/queen_b.png";
 
 const horizontalAxis = ["a", "b", "c", "d", "e", "f", "g", "h"];
 const verticalAxis = ["1", "2", "3", "4", "5", "6", "7", "8"];
@@ -32,8 +20,8 @@ for (let i = 0; i < 8; i++) {
 }
 
 for (let i = 0; i < 2; i++) {
-  const type = i === 0 ? 'b':'w'
-  const y = i === 0 ? 7:0
+  const type = i === 0 ? "b" : "w";
+  const y = i === 0 ? 7 : 0;
   pieces?.push({ image: `assets/Images/rook_${type}.png`, x: 0, y });
   pieces?.push({ image: `assets/Images/rook_${type}.png`, x: 7, y });
   pieces?.push({ image: `assets/Images/bishop_${type}.png`, x: 2, y });
@@ -44,16 +32,38 @@ for (let i = 0; i < 2; i++) {
   pieces?.push({ image: `assets/Images/queen_${type}.png`, x: 4, y });
 }
 
+let activePiece: HTMLElement | null = null;
 
-// pieces?.push({ image: WhitebishopImg, x: 5, y: 0 });
-// pieces?.push({ image: WhitebishopImg, x: 2, y: 0 });
-// pieces?.push({ image: WhiterookImg, x: 7, y: 0 });
-// pieces?.push({ image: WhiterookImg, x: 0, y: 0 });
-// pieces?.push({ image: WhiteknightImg, x: 1, y: 0 });
-// pieces?.push({ image: WhiteknightImg, x: 6, y: 0 });
-// pieces?.push({ image: WhitekingImg, x: 4, y: 0 });
-// pieces?.push({ image: WhitequeenImg, x: 3, y: 0 });
+let grabPiece = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  let element = e.target as HTMLElement;
+  if (element.classList.contains("chess-piece")) {
+    const x = e.clientX - 50;
+    const y = e.clientY - 50;
 
+    element.style.position = "absolute";
+    element.style.left = `${x}px`;
+    element.style.top = `${y}px`;
+
+    activePiece = element;
+  }
+};
+
+let movePiece = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  if (activePiece) {
+    const x = e.clientX - 50;
+    const y = e.clientY - 50;
+
+    activePiece.style.position = "absolute";
+    activePiece.style.left = `${x}px`;
+    activePiece.style.top = `${y}px`;
+  }
+};
+
+let dropPiece = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  if (activePiece) {
+    activePiece = null;
+  }
+};
 
 const Chessboard = () => {
   let board: Array<JSX.Element> = [];
@@ -71,7 +81,16 @@ const Chessboard = () => {
       board.push(<Tile number={number} image={image} key={Math.random()} />);
     }
   }
-  return <div id="chessboard">{board}</div>;
+  return (
+    <div
+      onMouseDown={(e) => grabPiece(e)}
+      onMouseMove={(e) => movePiece(e)}
+      onMouseUp={(e) => dropPiece(e)}
+      id="chessboard"
+    >
+      {board}
+    </div>
+  );
 };
 
 export default Chessboard;
